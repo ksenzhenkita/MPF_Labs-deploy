@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<h1 th:text="#{confirm.success.title}">Акаунт підтверджено</h1>
+<p th:text="#{confirm.success.text}">
+    Тепер ви можете увійти з використанням свого email і пароля.
+</p>
+<p>
+    <a th:href="@{/login}" th:text="#{confirm.success.link}">
+        Перейти до сторінки входу
+    </a>
+</p>
+</body>
+</html>

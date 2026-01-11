@@ -1,0 +1,51 @@
+<div th:fragment="header"
+     xmlns:th="http://www.thymeleaf.org"
+     xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+
+    <meta charset="UTF-8">
+    <title>MPF</title>
+
+    <nav style="margin-bottom: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;">
+
+
+        <div>
+            <a th:href="@{/books}">Books</a>
+            |
+            <a th:href="@{${uri}(lang='uk')}">UA</a>
+            |
+            <a th:href="@{${uri}(lang='en')}">EN</a>
+            |
+            <a th:href="@{${uri}(lang='fr')}">FR</a>
+        </div>
+
+
+
+
+
+
+        <div>
+            <span th:text="${currentTime}">2025-12-05 01:23</span>
+            &nbsp;|&nbsp;
+
+            <span sec:authorize="isAnonymous()">
+                <a th:href="@{/login}">Увійти</a>
+                |
+                <a th:href="@{/register}">Реєстрація</a>
+            </span>
+
+            <span sec:authorize="isAuthenticated()">
+                <span>Ви увійшли як</span>
+                <strong th:text="${currentUserNickname} ?: 'User'">User</strong>
+
+                <form th:action="@{/logout}" method="post" style="display:inline">
+                    <button type="submit">Вийти</button>
+                </form>
+            </span>
+        </div>
+    </nav>
+
+    <hr>
+</div>

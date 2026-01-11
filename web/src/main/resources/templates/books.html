@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+
+<h1 th:text="#{title.books}">Каталог книг</h1>
+
+<p th:if="${#lists.isEmpty(books)}"
+   th:text="#{label.noBooks}">Ще немає книг.</p>
+
+<ul th:if="${!#lists.isEmpty(books)}">
+    <li th:each="book : ${books}">
+        <a th:href="@{/comments(bookId=${book.id})}">
+            <span th:text="${book.title}">Назва</span> —
+            <span th:text="${book.author}">Автор</span>
+            (<span th:text="${book.pubYear}">Рік</span>)
+        </a>
+    </li>
+</ul>
+
+<!-- Pagination -->
+<nav th:if="${totalPages > 1}" style="margin-top: 16px;">
+    <div>
+        Page <b th:text="${page + 1}">1</b> / <b th:text="${totalPages}">1</b>
+        (total: <span th:text="${total}">0</span>)
+    </div>
+
+    <div style="margin-top: 10px;">
+        <a th:if="${hasPrev}"
+           th:href="@{/books(page=${page-1}, size=${size}, q=${q})}">
+            ← Prev
+        </a>
+        <span th:unless="${hasPrev}">← Prev</span>
+
+        <span style="margin: 0 10px;">|</span>
+
+        <a th:if="${hasNext}"
+           th:href="@{/books(page=${page+1}, size=${size}, q=${q})}">
+            Next →
+        </a>
+        <span th:unless="${hasNext}">Next →</span>
+    </div>
+</nav>
+
+<p sec:authorize="hasRole('MODERATOR')" style="margin-top: 16px;">
+    <a th:href="@{/books/new}" th:text="#{label.addBook}">Додати книгу</a>
+</p>
+
+</body>
+</html>

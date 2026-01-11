@@ -1,0 +1,81 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "deploy" ]
+  pull_request:
+    branches: [ "deploy" ]
+
+permissions:
+  contents: write   # дозволяє пушити в інші гілки (у нас - render)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_DB: mpf_labs
+          POSTGRES_USER: mpf_user
+          POSTGRES_PASSWORD: mpf_pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U mpf_user -d mpf_labs"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/mpf_labs
+      SPRING_DATASOURCE_USERNAME: mpf_user
+      SPRING_DATASOURCE_PASSWORD: mpf_pass
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build & Test with Maven
+        run: mvn -B clean package --file pom.xml
+       
+
+  promote-to-render:
+    needs: build
+    runs-on: ubuntu-latest
+    # Виконуємо тільки якщо:
+    # 1) це push (не pull_request)
+    # 2) job build завершилась успішно
+    if: github.event_name == 'push' && needs.build.result == 'success'
+
+    steps:
+      - name: Checkout repo with all branches
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # потрібно, щоб були всі гілки, не тільки deploy
+
+      - name: Configure Git user
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge deploy -> render (fast-forward only)
+        run: |
+          # Переходимо на гілку render
+          git checkout render
+
+          # Підтягнути останні зміни з origin (про всяк випадок)
+          git fetch origin
+
+          # Зробити fast-forward merge з deploy
+          git merge --ff-only origin/deploy
+
+          # Відправити оновлену render назад на GitHub
+          git push origin render

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+
+
+<h1 th:text="#{title.addBook}">Додати книгу</h1>
+
+<form th:action="@{/books}" th:object="${book}" method="post">
+
+    <label>
+        <span th:text="#{label.title}">Назва</span>:
+        <input th:field="*{title}" type="text" required>
+    </label>
+    <br>
+
+    <label>
+        <span th:text="#{label.author}">Автор</span>:
+        <input th:field="*{author}" type="text">
+    </label>
+    <br>
+
+    <label>
+        <span th:text="#{label.year}">Рік</span>:
+        <input th:field="*{pubYear}" type="number" min="0">
+    </label>
+    <br><br>
+
+    <button type="submit" th:text="#{label.add}">Додати</button>
+</form>
+
+<p>
+    <a th:href="@{/books}" th:text="#{label.back}">← Повернутись до списку книг</a>
+</p>
+
+</body>
+</html>

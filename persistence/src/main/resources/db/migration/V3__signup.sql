@@ -1,0 +1,31 @@
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS email VARCHAR(128);
+
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS password VARCHAR(255);
+
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS nickname VARCHAR(128);
+
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS role VARCHAR(32) DEFAULT 'REGISTERED';
+
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS verified BOOLEAN DEFAULT FALSE;
+
+ALTER TABLE users
+    ADD COLUMN IF NOT EXISTS verification_token VARCHAR(255);
+
+
+UPDATE users
+SET email = username
+WHERE email IS NULL
+  AND username LIKE '%_@_%._%';
+
+
+ALTER TABLE users
+    ALTER COLUMN email SET NOT NULL;
+
+
+ALTER TABLE users
+    ADD CONSTRAINT users_email_unique UNIQUE (email);

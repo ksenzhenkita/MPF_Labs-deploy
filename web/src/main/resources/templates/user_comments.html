@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+
+<h1>
+    <span th:text="#{user.comments.title}">Коментарі користувача</span>:
+    <span th:text="${username}">username</span>
+</h1>
+
+<a th:href="@{/}" th:text="#{user.comments.back}">← назад</a>
+
+
+<p th:if="${#lists.isEmpty(comments)}"
+   th:text="#{user.comments.empty}">
+</p>
+
+
+<ul th:if="${!#lists.isEmpty(comments)}">
+    <li th:each="c : ${comments}">
+        <p>
+            <strong th:text="${c.createdAt}">2025-11-28</strong>
+        </p>
+
+        <p th:text="${c.text}">Text...</p>
+
+        <p>
+            <span th:text="#{user.comments.book}">до книги</span>:
+            <a th:href="@{/books/{id}(id=${c.bookId})}">
+                Book #<span th:text="${c.bookId}">1</span>
+            </a>
+        </p>
+
+        <hr>
+    </li>
+</ul>
+
+</body>
+</html>

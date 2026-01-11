@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+
+<h1 th:text="#{login.title}">Вхід</h1>
+
+<div th:if="${param.error}" style="color: red;">
+    <span th:text="#{login.error}">Невірний email або пароль.</span>
+</div>
+
+<div th:if="${param.logout}">
+    <span th:text="#{login.logout}">Ви вийшли із системи.</span>
+</div>
+
+<form th:action="@{/login}" method="post">
+
+    <div>
+        <label for="email" th:text="#{login.email.label}">Email:</label><br>
+        <input id="email" type="email" name="email"/>
+    </div>
+
+    <div>
+        <label for="password" th:text="#{login.password.label}">Пароль:</label><br>
+        <input id="password" type="password" name="password"/>
+    </div>
+
+    <button type="submit" th:text="#{login.submit}">Увійти</button>
+</form>
+
+<p>
+    <a th:href="@{/register}" th:text="#{login.register.link}">
+        Створити новий акаунт
+    </a>
+</p>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<h1 th:text="#{registration.success.title}">Реєстрація успішна</h1>
+
+<p th:text="#{registration.success.message}">
+    Ми надіслали лист із посиланням для підтвердження на вашу електронну пошту.
+</p>
+
+<p>
+    <a th:href="@{/}" th:text="#{registration.success.home}">На головну</a>
+</p>
+</body>
+</html>
